@@ -39,7 +39,12 @@
         </encoder>
     </appender>
 
-    <logger name="org.codingpedia" additivity="false">
+    <!--<logger name="org.springframework.web.servlet.mvc">-->
+        <!--<level value="TRACE"/>-->
+        <!--<appender-ref ref="consoleAppender"/>-->
+    <!--</logger>-->
+
+    <logger name="dk.eazyit.halalguide">
         <level value="DEBUG"/>
         <appender-ref ref="dailyRollingFileAppender"/>
         <appender-ref ref="minuteRollingFileAppender"/>

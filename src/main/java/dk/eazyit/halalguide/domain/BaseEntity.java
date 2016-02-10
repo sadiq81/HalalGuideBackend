@@ -10,7 +10,7 @@ import java.util.Date;
 public abstract class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
 
     protected CreationStatus creationStatus;
@@ -20,6 +20,8 @@ public abstract class BaseEntity implements Serializable {
     protected Date updatedAt;
 
     protected Date createdAt;
+
+    protected String parseId;
 
     protected BaseEntity() {
     }
@@ -66,12 +68,24 @@ public abstract class BaseEntity implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        this.creationStatus = CreationStatus.AwaitingApproval;
-        this.updatedAt = this.createdAt = new Date();
+        if (this.createdAt == null) {
+            this.creationStatus = CreationStatus.AwaitingApproval;
+            this.updatedAt = this.createdAt = new Date();
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = new Date();
+        if (this.updatedAt == null) {
+            this.updatedAt = new Date();
+        }
+    }
+
+    public String getParseId() {
+        return parseId;
+    }
+
+    public void setParseId(String parseId) {
+        this.parseId = parseId;
     }
 }

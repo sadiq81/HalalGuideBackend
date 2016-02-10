@@ -14,6 +14,8 @@ import java.util.List;
 @XmlRootElement
 public class Location extends BaseEntity {
 
+    private int counter;
+
     private String name;
 
     private String road;
@@ -24,9 +26,9 @@ public class Location extends BaseEntity {
 
     private String postalCode;
 
-    private float Latitude;
+    private float latitude;
 
-    private float Longitude;
+    private float longitude;
 
     private String website;
 
@@ -59,6 +61,14 @@ public class Location extends BaseEntity {
 
     public Location() {
         super();
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
 
     public String getName() {
@@ -102,19 +112,19 @@ public class Location extends BaseEntity {
     }
 
     public float getLatitude() {
-        return Latitude;
+        return latitude;
     }
 
     public void setLatitude(float latitude) {
-        Latitude = latitude;
+        this.latitude = latitude;
     }
 
     public float getLongitude() {
-        return Longitude;
+        return longitude;
     }
 
     public void setLongitude(float longitude) {
-        Longitude = longitude;
+        this.longitude = longitude;
     }
 
     public String getWebsite() {
@@ -207,8 +217,8 @@ public class Location extends BaseEntity {
                 ", roadNumber='" + roadNumber + '\'' +
                 ", city='" + city + '\'' +
                 ", postalCode='" + postalCode + '\'' +
-                ", Latitude=" + Latitude +
-                ", Longitude=" + Longitude +
+                ", Latitude=" + latitude +
+                ", Longitude=" + longitude +
                 ", website='" + website + '\'' +
                 ", locationType=" + locationType +
                 ", telephone='" + telephone + '\'' +

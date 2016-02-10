@@ -10,8 +10,13 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="dk.eazyit.halalguide.controller"/>
+    <context:component-scan base-package="dk.eazyit.halalguide.handler"/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- max upload size in bytes -->
+        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+    </bean>
 
     <mvc:annotation-driven/>
-
 
 </beans>
