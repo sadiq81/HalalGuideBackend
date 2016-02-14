@@ -5,16 +5,14 @@ import dk.eazyit.halalguide.domain.enums.Language;
 import dk.eazyit.halalguide.domain.enums.LocationType;
 import dk.eazyit.halalguide.domain.enums.ShopCategory;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@XmlRootElement
 public class Location extends BaseEntity {
-
-    private int counter;
 
     private String name;
 
@@ -37,8 +35,8 @@ public class Location extends BaseEntity {
     private String telephone;
 
     //Dining location type specific
-    @ElementCollection
-    private List<String> navneLoebeNummer;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> navneLoebeNummer;
 
     private boolean pork;
 
@@ -46,8 +44,8 @@ public class Location extends BaseEntity {
 
     private boolean nonHalalFood;
 
-    @ElementCollection
-    private List<DiningCategory> categories;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<DiningCategory> categories;
     //
 
     //Mosque location type specific
@@ -55,20 +53,15 @@ public class Location extends BaseEntity {
     //
 
     //Shop location type specific
-    @ElementCollection
-    private List<ShopCategory> shopCategories;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<ShopCategory> shopCategories;
     //
+
+    @Transient
+    private Set<Picture> pictures;
 
     public Location() {
         super();
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
     }
 
     public String getName() {
@@ -152,11 +145,11 @@ public class Location extends BaseEntity {
     }
 
 
-    public List<String> getNavneLoebeNummer() {
+    public Set<String> getNavneLoebeNummer() {
         return navneLoebeNummer;
     }
 
-    public void setNavneLoebeNummer(List<String> navneLoebeNummer) {
+    public void setNavneLoebeNummer(Set<String> navneLoebeNummer) {
         this.navneLoebeNummer = navneLoebeNummer;
     }
 
@@ -184,11 +177,11 @@ public class Location extends BaseEntity {
         this.nonHalalFood = nonHalalFood;
     }
 
-    public List<DiningCategory> getCategories() {
+    public Set<DiningCategory> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<DiningCategory> categories) {
+    public void setCategories(Set<DiningCategory> categories) {
         this.categories = categories;
     }
 
@@ -200,12 +193,20 @@ public class Location extends BaseEntity {
         this.language = language;
     }
 
-    public List<ShopCategory> getShopCategories() {
+    public Set<ShopCategory> getShopCategories() {
         return shopCategories;
     }
 
-    public void setShopCategories(List<ShopCategory> shopCategories) {
+    public void setShopCategories(Set<ShopCategory> shopCategories) {
         this.shopCategories = shopCategories;
+    }
+
+    public Set<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Set<Picture> pictures) {
+        this.pictures = pictures;
     }
 
     @Override

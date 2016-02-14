@@ -1,5 +1,8 @@
 package dk.eazyit.halalguide.repository;
 
+import dk.eazyit.halalguide.domain.Message;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Privat
@@ -7,6 +10,5 @@ package dk.eazyit.halalguide.repository;
  * Time: 23.31
  * To change this template use File | Settings | File Templates.
  */
-//@Repository
-public interface MessageRepository /*extends JpaRepository<Message, Long>*/ {
+public interface MessageRepository extends JpaRepository<Message, String> {
 }

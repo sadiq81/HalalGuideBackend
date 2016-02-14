@@ -1,8 +1,9 @@
 package dk.eazyit.halalguide.repository;
 
 import dk.eazyit.halalguide.domain.Location;
-import dk.eazyit.halalguide.domain.Review;
+import dk.eazyit.halalguide.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * Time: 23.31
  * To change this template use File | Settings | File Templates.
  */
-public interface ReviewRepository extends JpaRepository<Review, String> {
+public interface UserRepository extends JpaRepository<User, String> {
 
-    Review findByParseId(String parseId);
+    User findByParseId(String parseId);
+
 }

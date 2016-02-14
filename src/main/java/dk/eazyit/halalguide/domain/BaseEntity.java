@@ -1,6 +1,7 @@
 package dk.eazyit.halalguide.domain;
 
 import dk.eazyit.halalguide.domain.enums.CreationStatus;
+import dk.eazyit.halalguide.util.IdGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,8 +11,10 @@ import java.util.Date;
 public abstract class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected long id;
+    protected String id = IdGenerator.createId();
+
+    @Version
+    protected Integer version;
 
     protected CreationStatus creationStatus;
 
@@ -23,15 +26,26 @@ public abstract class BaseEntity implements Serializable {
 
     protected String parseId;
 
+    @ManyToOne
+    protected User user;
+
     protected BaseEntity() {
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public CreationStatus getCreationStatus() {
@@ -87,5 +101,42 @@ public abstract class BaseEntity implements Serializable {
 
     public void setParseId(String parseId) {
         this.parseId = parseId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || !(o instanceof BaseEntity)) {
+            return false;
+        }
+
+        BaseEntity other = (BaseEntity) o;
+
+        // if the id is missing, return false
+        if (id == null) return false;
+
+        // equivalence by id
+        return id.equals(other.getId());
+    }
+
+    public int hashCode() {
+        if (id != null) {
+            return id.hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
+
+    public String toString() {
+        return this.getClass().getName()
+                + "[id=" + id + "]";
     }
 }

@@ -14,7 +14,7 @@
     <jpa:repositories base-package="dk.eazyit.halalguide.repository" entity-manager-factory-ref="entityManagerFactory"
                       transaction-manager-ref="transactionManager"/>
 
-    <context:property-placeholder location="classpath:application.properties"/>
+    <context:property-placeholder location="classpath:application-test.properties"/>
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -41,7 +41,7 @@
         <property name="packagesToScan" value="dk.eazyit.halalguide.domain"/>
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.connection.release_mode">on_close</prop>
                 <prop key="hibernate.connection.autocommit">true</prop>

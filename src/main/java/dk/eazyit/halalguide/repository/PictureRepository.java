@@ -1,5 +1,12 @@
 package dk.eazyit.halalguide.repository;
 
+import dk.eazyit.halalguide.domain.Location;
+import dk.eazyit.halalguide.domain.Picture;
+import dk.eazyit.halalguide.domain.Review;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Privat
@@ -8,5 +15,11 @@ package dk.eazyit.halalguide.repository;
  * To change this template use File | Settings | File Templates.
  */
 //@Repository
-public interface PictureRepository /*extends JpaRepository<Picture, Long>*/ {
+public interface PictureRepository extends JpaRepository<Picture, String> {
+
+    Picture findByParseId(String parseId);
+
+    List<Picture> findByLocation(Location location);
+
+    List<Picture> findByReview(Review Review);
 }

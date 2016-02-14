@@ -1,19 +1,23 @@
 package dk.eazyit.halalguide.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@XmlRootElement
 public class Review extends BaseEntity {
 
-    @ManyToOne
+    @Transient
     private Location location;
 
-    private Number rating;
+    private int rating;
 
+    @Column(length = 1000)
     private String review;
+
+    @Transient
+    private Set<Picture> pictures;
 
     public Review() {
         super();
@@ -27,11 +31,11 @@ public class Review extends BaseEntity {
         this.location = location;
     }
 
-    public Number getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Number rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -41,6 +45,14 @@ public class Review extends BaseEntity {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public Set<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Set<Picture> pictures) {
+        this.pictures = pictures;
     }
 
     @Override

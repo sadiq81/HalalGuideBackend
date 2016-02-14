@@ -12,12 +12,13 @@
         <java.version>1.7</java.version>
         <spring.version>4.2.4.RELEASE</spring.version>
         <spring.data.version>1.9.2.RELEASE</spring.data.version>
-        <spring.cloud.version>1.0.4.RELEASE</spring.cloud.version>
-
+        <!--<spring.cloud.version>1.0.4.RELEASE</spring.cloud.version>-->
+        <aws.version>1.10.52</aws.version>
         <servletapi.version>3.1.0</servletapi.version>
         <javax.servlet.version>2.5</javax.servlet.version>
 
         <mysql.version>5.1.38</mysql.version>
+        <dbh2.version>1.4.191</dbh2.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
         <javax.persistence.version>1.0.2</javax.persistence.version>
@@ -149,10 +150,18 @@
             <!--<scope>runtime</scope>-->
         </dependency>
 
+        <!-- H2 DB -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-aws-context</artifactId>
-            <version>${spring.cloud.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${dbh2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>${aws.version}</version>
         </dependency>
 
         <dependency>
