@@ -10,12 +10,13 @@
 
     <properties>
         <java.version>1.7</java.version>
+
         <spring.version>4.2.4.RELEASE</spring.version>
         <spring.data.version>1.9.2.RELEASE</spring.data.version>
-        <!--<spring.cloud.version>1.0.4.RELEASE</spring.cloud.version>-->
+
         <aws.version>1.10.52</aws.version>
         <servletapi.version>3.1.0</servletapi.version>
-        <javax.servlet.version>2.5</javax.servlet.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
 
         <mysql.version>5.1.38</mysql.version>
         <dbh2.version>1.4.191</dbh2.version>
@@ -34,18 +35,16 @@
 
         <jackson.version>2.7.1-1</jackson.version>
 
+        <junit.version>4.12</junit.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <mockito.version>1.10.19</mockito.version>
+
     </properties>
 
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
 
-        <!-- Spring MVC support -->
+        <!--SPRING MVC -->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -96,13 +95,15 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
+            <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
+        <!--PERSISTENCE-->
+
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
+            <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
@@ -128,7 +129,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
-            <!--<scope>runtime</scope>-->
         </dependency>
 
         <dependency>
@@ -147,16 +147,9 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
-            <!--<scope>runtime</scope>-->
         </dependency>
 
-        <!-- H2 DB -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${dbh2.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!--AWS CLOUD-->
 
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -164,11 +157,23 @@
             <version>${aws.version}</version>
         </dependency>
 
+        <!-- SERVLET -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet.version}</version>
+        </dependency>
+
+        <!--DATA BINDING-->
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
+        <!--LOGGING-->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -182,6 +187,7 @@
         </dependency>
 
         <!-- javamelody-core -->
+
         <dependency>
             <groupId>net.bull.javamelody</groupId>
             <artifactId>javamelody-core</artifactId>
@@ -208,11 +214,51 @@
             </exclusions>
         </dependency>
 
+        <!-- TEST -->
+
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${dbh2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
