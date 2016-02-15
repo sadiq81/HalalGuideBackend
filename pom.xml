@@ -264,5 +264,15 @@
     </dependencies>
     <build>
         <finalName>halalguidebackend</finalName>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources/</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/webapp/WEB-INF</directory>
+            </testResource>
+        </testResources>
     </build>
+
+
 </project>
