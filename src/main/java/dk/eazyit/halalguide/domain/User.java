@@ -33,14 +33,48 @@ public class User extends BaseEntity {
     public User() {
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public SocialMediaType getSocialMediaType() {
+        return socialMediaType;
+    }
+
+    public void setSocialMediaType(SocialMediaType socialMediaType) {
+        this.socialMediaType = socialMediaType;
+    }
+
+    public String getSocialMediaId() {
+        return socialMediaId;
+    }
+
+    public void setSocialMediaId(String socialMediaId) {
+        this.socialMediaId = socialMediaId;
+    }
+
     public Map<String, String> getUserData() {
         return userData;
     }
 
     public void setUserData(Map<String, String> userData) {
-        this.firstName = userData.get("first_name");
-        this.lastName = userData.get("last_name");
-        this.socialMediaId = userData.get("id");
-        this.userData = userData;
+        if (userData != null) {
+            this.firstName = userData.get("first_name");
+            this.lastName = userData.get("last_name");
+            this.socialMediaId = userData.get("id");
+            this.userData = userData;
+        }
     }
 }

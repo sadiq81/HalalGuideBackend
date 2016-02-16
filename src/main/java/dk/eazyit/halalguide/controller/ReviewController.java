@@ -64,16 +64,16 @@ public class ReviewController {
     }
 
     @Transactional
-    @RequestMapping(path = "/review", method = RequestMethod.POST, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/review", method = RequestMethod.POST, consumes = {"multipart/mixed"})
     public ResponseEntity<Void> putLocation(@RequestPart(name = "locationId", required = true) String locationId,
                                             @RequestPart(name = "review", required = true) Review review,
-                                            @RequestParam(name = "picture", required = false) MultipartFile[] pictures,
+                                            @RequestPart(name = "picture", required = false) MultipartFile[] pictures,
                                             UriComponentsBuilder ucBuilder) {
 
-        Location found = locationRepository.findByParseId(locationId);
+        Location found = locationRepository.findOne(locationId);
 
         if (found == null) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
         Review created = reviewRepository.save(review);

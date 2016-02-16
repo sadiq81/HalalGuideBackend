@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -55,33 +54,49 @@ public class PictureController {
     }
 
     @Transactional
-    @RequestMapping(path = "/picture", method = RequestMethod.POST, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> putPicture(@RequestPart(required = true) Picture parseObject, @RequestPart(required = true) String locationId, @RequestPart(required = false) String reviewId, @RequestPart MultipartFile picture, UriComponentsBuilder ucBuilder) {
+    @RequestMapping(path = "/picture", method = RequestMethod.POST, consumes = {"multipart/mixed"})
+    public ResponseEntity<Void> putPicture(@RequestPart(name = "locationId", required = true) String locationId,
+                                           @RequestPart(name = "reviewId", required = false) String reviewId,
+                                           @RequestPart("picture") MultipartFile[] pictures,
+                                           UriComponentsBuilder ucBuilder) {
+
         logger.info("Creating Picture: ");
 
-        Location foundLocation = locationRepository.findByParseId(locationId);
+        Location foundLocation = locationRepository.findOne(locationId);
         if (foundLocation == null) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
-        Review foundReview = reviewRepository.findByParseId(reviewId);
+        Review foundReview = null;
+        if (reviewId != null) {
+            foundReview = reviewRepository.findOne(reviewId);
+        }
 
-        Picture created = null;
-        try {
-            String ressourceUrl = awsFileService.uploadPicture(foundLocation, picture);
-            created = new Picture(foundLocation, foundReview, ressourceUrl);
-            created.setCreatedAt(parseObject.getCreatedAt());
-            created.setUpdatedAt(parseObject.getUpdatedAt());
-            created.setSubmitterId(parseObject.getSubmitterId());
-            created.setParseId(parseObject.getParseId());
-            pictureRepository.save(created);
-        } catch (Exception e) {
-            logger.error("Creating Message failed with exception: " + e);
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (pictures != null && pictures.length > 0) {
+
+            Set<Picture> pictureObjects = new HashSet<Picture>(pictures.length);
+
+            for (int i = 0; i < pictures.length; i++) {
+                try {
+
+                    MultipartFile file = pictures[i];
+                    String ressourceUrl = awsFileService.uploadPicture(foundLocation, file);
+                    Picture picture = new Picture(foundLocation, foundReview, ressourceUrl);
+                    pictureObjects.add(picture);
+                } catch (Exception e) {
+                    //TODO delete bucket folder
+                    logger.error("Creating Message failed with exception: " + e);
+                    return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
+            }
+            pictureObjects = new HashSet<Picture>(pictureRepository.save(pictureObjects));
+            logger.info("Saved " + pictureObjects.size() + " picture(s)");
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/picture/{id}").buildAndExpand(created.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/location/{id}").buildAndExpand(foundLocation.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
+
 }

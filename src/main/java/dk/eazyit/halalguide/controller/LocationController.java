@@ -2,6 +2,7 @@ package dk.eazyit.halalguide.controller;
 
 import dk.eazyit.halalguide.domain.Location;
 import dk.eazyit.halalguide.domain.Picture;
+import dk.eazyit.halalguide.domain.enums.LocationType;
 import dk.eazyit.halalguide.repository.LocationRepository;
 import dk.eazyit.halalguide.repository.PictureRepository;
 import dk.eazyit.halalguide.repository.ReviewRepository;
@@ -41,6 +42,12 @@ public class LocationController {
     @Autowired
     AWSFileService awsFileService;
 
+    @RequestMapping(value = "/location", method = RequestMethod.GET, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Location> getLocationsFiltered(@RequestPart LocationType id) throws IOException {
+
+        return new ResponseEntity<Location>(HttpStatus.NOT_FOUND);
+    }
+
     @RequestMapping(value = "/location/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Location> getLocation(@PathVariable("id") String id) throws IOException {
         logger.debug("Fetching Location with id " + id);
@@ -64,8 +71,10 @@ public class LocationController {
     }
 
     @Transactional
-    @RequestMapping(path = "/location", method = RequestMethod.POST, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> putLocation(@RequestPart(name = "location", required = true) Location location, @RequestParam(name = "picture", required = false) MultipartFile[] pictures, UriComponentsBuilder ucBuilder) {
+    @RequestMapping(path = "/location", method = RequestMethod.POST, consumes = {"multipart/mixed"})
+    public ResponseEntity<Void> putLocation(@RequestPart(name = "location", required = true) Location location,
+                                            @RequestPart(name = "picture", required = false) MultipartFile[] pictures,
+                                            UriComponentsBuilder ucBuilder) {
 
         Location created = locationRepository.save(location);
 

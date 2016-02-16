@@ -3,19 +3,12 @@ package dk.eazyit.halalguide.controller;
 import com.amazonaws.util.json.Jackson;
 import dk.eazyit.halalguide.BaseTest;
 import dk.eazyit.halalguide.domain.Location;
-import dk.eazyit.halalguide.domain.enums.LocationType;
-import dk.eazyit.halalguide.util.IdGenerator;
-import org.apache.commons.io.IOUtils;
+import dk.eazyit.halalguide.domain.Review;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.HashMap;
-
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,12 +19,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Time: 07.23
  * To change this template use File | Settings | File Templates.
  */
-public class LocationControllerTest extends BaseTest {
+public class PictureControllerTest extends BaseTest {
 
-    @Test
-    public void testPostLocationWithOutFile() throws Exception {
+    private Location location = null;
 
-        Location location = generateLocation();
+    @Before
+    public void setup() throws Exception {
+        super.setup();
+
+        location = generateLocation();
         String locationString = Jackson.toJsonPrettyString(location);
 
         MockMultipartFile jsonPart = new MockMultipartFile("location", "json", "application/json", locationString.getBytes());
@@ -41,20 +37,16 @@ public class LocationControllerTest extends BaseTest {
                 .contentType(generateMultiPartMixedMediaType()))
                 .andExpect(header().string("location", endpoint + "location/" + location.getId()))
                 .andExpect(status().isCreated());
-
     }
 
     @Test
-    public void testPostLocationWithOneFile() throws Exception {
+    public void testPostReviewWithOneFile() throws Exception {
 
-        Location location = generateLocation();
-        String locationString = Jackson.toJsonPrettyString(location);
-
-        MockMultipartFile jsonPart = new MockMultipartFile("location", "json", "application/json", locationString.getBytes());
+        MockMultipartFile jsonPartlocation = new MockMultipartFile("locationId", "text", "text/plain", location.getId().getBytes());
         MockMultipartFile filePart = new MockMultipartFile("picture", "image.jpg", "image/jpg", generateImageByteArray());
 
-        mockMvc.perform(fileUpload(endpoint + "location")
-                .file(jsonPart)
+        mockMvc.perform(fileUpload(endpoint + "picture")
+                .file(jsonPartlocation)
                 .file(filePart)
                 .contentType(generateMultiPartMixedMediaType()))
                 .andExpect(header().string("location", endpoint + "location/" + location.getId()))
@@ -63,17 +55,14 @@ public class LocationControllerTest extends BaseTest {
     }
 
     @Test
-    public void testPostLocationWithTwoFiles() throws Exception {
+    public void testPostReviewWithTwoFiles() throws Exception {
 
-        Location location = generateLocation();
-        String locationString = Jackson.toJsonPrettyString(location);
-
-        MockMultipartFile jsonPart = new MockMultipartFile("location", "json", "application/json", locationString.getBytes());
+        MockMultipartFile jsonPartlocation = new MockMultipartFile("locationId", "text", "text/plain", location.getId().getBytes());
         MockMultipartFile filePart = new MockMultipartFile("picture", "image.jpg", "image/jpg", generateImageByteArray());
         MockMultipartFile filePart2 = new MockMultipartFile("picture", "image.jpg", "image/jpg", generateImageByteArray());
 
-        mockMvc.perform(fileUpload(endpoint + "location")
-                .file(jsonPart)
+        mockMvc.perform(fileUpload(endpoint + "picture")
+                .file(jsonPartlocation)
                 .file(filePart)
                 .file(filePart2)
                 .contentType(generateMultiPartMixedMediaType()))
@@ -81,5 +70,6 @@ public class LocationControllerTest extends BaseTest {
                 .andExpect(status().isCreated());
 
     }
+
 
 }

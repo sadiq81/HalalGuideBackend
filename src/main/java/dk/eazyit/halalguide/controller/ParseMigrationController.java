@@ -8,18 +8,19 @@ import dk.eazyit.halalguide.repository.LocationRepository;
 import dk.eazyit.halalguide.repository.PictureRepository;
 import dk.eazyit.halalguide.repository.ReviewRepository;
 import dk.eazyit.halalguide.repository.UserRepository;
+import dk.eazyit.halalguide.service.AWSFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -45,6 +46,66 @@ public class ParseMigrationController {
 
     @Autowired
     private PictureRepository pictureRepository;
+
+    @Autowired
+    AWSFileService awsFileService;
+
+    @Transactional
+    @RequestMapping(path = "/parseReview", method = RequestMethod.POST, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> putLocation(@RequestPart(name = "parseLocationId", required = true) String locationId,
+                                            @RequestPart(name = "review", required = true) Review review,
+                                            UriComponentsBuilder ucBuilder) {
+
+        Location found = locationRepository.findByParseId(locationId);
+
+        if (found == null) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+
+        Review created = reviewRepository.save(review);
+
+        logger.info("Created Review with id: " + created.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/review/{id}").buildAndExpand(created.getId()).toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
+
+    @Transactional
+    @RequestMapping(path = "/parsePicture", method = RequestMethod.POST, consumes = {"multipart/mixed"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> putPicture(@RequestPart(name = "parsePicture", required = true) Picture parsePicture,
+                                           @RequestPart(name = "parseLocationId", required = true) String parseLocationId,
+                                           @RequestPart(name = "parseReviewId",required = false) String parseReviewId,
+                                           @RequestPart MultipartFile picture,
+                                           UriComponentsBuilder ucBuilder) {
+
+        logger.info("Creating Picture: ");
+
+        Location foundLocation = locationRepository.findByParseId(parseLocationId);
+        if (foundLocation == null) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+
+        Review foundReview = reviewRepository.findByParseId(parseReviewId);
+
+        Picture created = null;
+        try {
+            String ressourceUrl = awsFileService.uploadPicture(foundLocation, picture);
+            created = new Picture(foundLocation, foundReview, ressourceUrl);
+            created.setCreatedAt(parsePicture.getCreatedAt());
+            created.setUpdatedAt(parsePicture.getUpdatedAt());
+            created.setSubmitterId(parsePicture.getSubmitterId());
+            created.setParseId(parsePicture.getParseId());
+            pictureRepository.save(created);
+        } catch (Exception e) {
+            logger.error("Creating Message failed with exception: " + e);
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/picture/{id}").buildAndExpand(created.getId()).toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
 
     @RequestMapping(value = "/parseMigration", method = RequestMethod.GET)
     public ResponseEntity<Void> migrateData() {

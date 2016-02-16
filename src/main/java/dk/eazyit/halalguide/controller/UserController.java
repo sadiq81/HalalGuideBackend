@@ -50,8 +50,8 @@ public class UserController {
     }
 
     @Transactional
-    @RequestMapping(path = "/user", method = RequestMethod.POST, consumes = {"application/json"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> putLocation(@RequestBody User user, UriComponentsBuilder ucBuilder) {
+    @RequestMapping(path = "/user", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> putLocation(@RequestBody(required = true) User user, UriComponentsBuilder ucBuilder) {
 
         User created = userRepository.save(user);
 
